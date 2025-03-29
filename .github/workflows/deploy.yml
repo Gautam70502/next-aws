@@ -7,7 +7,7 @@
       name: CI
       runs-on: ubuntu-latest
       outputs:
-      ecrImage: ${{ steps.build-image.outputs.ecrImage }}
+       ecrImage: ${{ steps.build-image.outputs.ecrImage }}
       steps:
       - name: Check out latest code
         uses: actions/checkout@v3
