@@ -48,7 +48,7 @@
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-defination-arn: arn:aws:ecs:eu-north-1:875986302224:task-definition/next-task:1 
+          task-definition-arn: arn:aws:ecs:eu-north-1:875986302224:task-definition/next-task:1 
           container-name: next-container
           image: ${{ steps.build-image.outputs.ecrImage }}
       
