@@ -6,6 +6,8 @@
     build : 
       name: CI
       runs-on: ubuntu-latest
+      outputs:
+      ecrImage: ${{ steps.build-image.outputs.ecrImage }}
       steps:
       - name: Check out latest code
         uses: actions/checkout@v3
@@ -50,7 +52,7 @@
         with:
           task-definition-arn: arn:aws:ecs:eu-north-1:875986302224:task-definition/next-task:1 
           container-name: next-container
-          image: ${{ steps.build-image.outputs.ecrImage }}
+          image: ${{ needs.build.outputs.ecrImage }}
       
       - name: Deploy Amazon ECS task definition
         env: 
