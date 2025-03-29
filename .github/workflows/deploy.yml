@@ -20,12 +20,45 @@
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push docker image to Amazon ECR
+        id: build-image
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: next-image
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker build -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY:latest
+          echo "ecrImage=$REGISTRY/$REPOSITORY:latest" >> $GITHUB_OUTPUT
 
-   
+    deploy:
+      name: CD
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+      - name: Check out latest code
+        uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: eu-north-1
+      
+      - name: updating task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-defination-arn: arn:aws:ecs:eu-north-1:875986302224:task-definition/next-task:1 
+          container-name: next-container
+          image: ${{ steps.build-image.outputs.ecrImage }}
+      
+      - name: Deploy Amazon ECS task definition
+        env: 
+          ECS_SERVICE: next-service
+          ECS_CLUSTER: next-cluster
+        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
