@@ -28,11 +28,11 @@
           REPOSITORY: next-image
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:latest .
-          docker push $REGISTRY/$REPOSITORY:latest
-          echo "ecrImage=$REGISTRY/$REPOSITORY:latest" >> "$GITHUB_OUTPUT"
-          echo $ecrImage
-          echo "$ecrImage"
+          # docker build -t $REGISTRY/$REPOSITORY:latest .
+          # docker push $REGISTRY/$REPOSITORY:latest
+          # echo "ecrImage=$REGISTRY/$REPOSITORY:latest" >> "$GITHUB_OUTPUT"
+          # echo $ecrImage
+          # echo "$ecrImage"
 
     deploy:
       name: CD
@@ -63,7 +63,7 @@
         env: 
           ECS_SERVICE: next-service
           ECS_CLUSTER: next-cluster
-        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE }}
