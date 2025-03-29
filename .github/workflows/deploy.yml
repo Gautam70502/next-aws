@@ -28,11 +28,11 @@
           REPOSITORY: next-image
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # docker build -t $REGISTRY/$REPOSITORY:latest .
-          # docker push $REGISTRY/$REPOSITORY:latest
-          # echo "ecrImage=$REGISTRY/$REPOSITORY:latest" >> "$GITHUB_OUTPUT"
-          # echo $ecrImage
-          # echo "$ecrImage"
+          docker build -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY:latest
+          echo "ecrImage=$REGISTRY/$REPOSITORY:latest" >> "$GITHUB_OUTPUT"
+          echo $ecrImage
+          echo "$ecrImage"
 
     deploy:
       name: CD
@@ -68,4 +68,4 @@
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+          wait-for-service-stability: false

@@ -21,7 +21,8 @@ export default function Home() {
           <code className={styles.code}>src/app/page.tsx</code>
         </p>
 
-        <p className={styles.description}>This is not an official starter!</p>
+        <p className={styles.description}>This is not an official starter!
+          This is not an official starter!</p>
 
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
