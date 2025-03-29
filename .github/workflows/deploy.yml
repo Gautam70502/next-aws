@@ -30,9 +30,9 @@
         run: |
           docker build -t $REGISTRY/$REPOSITORY:latest .
           docker push $REGISTRY/$REPOSITORY:latest
-          echo "ecrImage=$REGISTRY/$REPOSITORY:latest" >> $GITHUB_OUTPUT
+          echo "ecrImage=$REGISTRY/$REPOSITORY:latest" >> "$GITHUB_OUTPUT"
           echo $ecrImage
-          echo ecrImage
+          echo "$ecrImage"
 
     deploy:
       name: CD
