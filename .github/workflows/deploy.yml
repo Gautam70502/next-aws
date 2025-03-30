@@ -59,7 +59,7 @@
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition-arn: task-definition.json
+          task-definition: task-definition.json
           container-name: next-container
           image: 875986302224.dkr.ecr.eu-north-1.amazonaws.com/next-image:latest
         
