@@ -49,6 +49,9 @@
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: eu-north-1
 
+      - name: Debug ECR Image Output in Deploy Job
+        run: echo "Deploying Image ${{ needs.build.outputs.ecrImage }}"
+
       - name: Download task definition
         run: |
           aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION_NAME }} \
@@ -62,7 +65,7 @@
         with:
           task-definition: task-definition.json
           container-name: next-container
-          image: "$ecrImage"
+          image: "${{ env.ecrImage }}"
         
       
       - name: Deploy Amazon ECS task definition
