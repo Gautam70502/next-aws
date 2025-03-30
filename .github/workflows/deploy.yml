@@ -6,8 +6,6 @@
     build : 
       name: CI
       runs-on: ubuntu-latest
-      outputs:
-       ecrImage: ${{ steps.build-image.outputs.ecrImage }}
       steps:
       - name: Check out latest code
         uses: actions/checkout@v3
@@ -26,14 +24,9 @@
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: next-image
-          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:latest .
           docker push $REGISTRY/$REPOSITORY:latest
-          echo "ecrImage=$REGISTRY/$REPOSITORY:latest" >>  "$GITHUB_OUTPUT"
-
-      - name: Debug ECR Image Output
-        run: echo "Image pushed ${{ steps.build-image.outputs.ecrImage }}"    
 
     deploy:
       name: CD
@@ -52,25 +45,20 @@
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: eu-north-1
 
-      - name: Debug ECR Image Output in Deploy Job
-        run: echo "Deploying Image ${{ env.ecrImage }}"
-
       - name: Download task definition
         run: |
           aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION_NAME }} \
           --query taskDefinition > task-definition.json
       
       - name: updating task definition
-        env:
-          ecrImage: ${{ needs.build.outputs.ecrImage }}
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
           container-name: next-container
-          image: "${{ env.ecrImage }}"
+          environment-variables: "LOG_LEVEL=info"
+          image: ${{ secrets.ECR_IMAGE_URL }}
         
-      
       - name: Deploy Amazon ECS task definition
         env: 
           ECS_SERVICE: next-service
