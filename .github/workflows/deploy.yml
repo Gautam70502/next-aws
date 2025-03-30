@@ -42,6 +42,7 @@
       steps:
       - env:
           ecrImage: ${{ needs.build.outputs.ecrImage }}
+        run: echo "$ecrImage"
       - name: Check out latest code
         uses: actions/checkout@v3
       - name: Configure AWS credentials
