@@ -40,6 +40,8 @@
       runs-on: ubuntu-latest
       needs: build
       steps:
+      - env:
+          ecrImage: ${{ needs.build.outputs.ecrImage }}
       - name: Check out latest code
         uses: actions/checkout@v3
       - name: Configure AWS credentials
@@ -50,7 +52,7 @@
           aws-region: eu-north-1
 
       - name: Debug ECR Image Output in Deploy Job
-        run: echo "Deploying Image ${{ needs.build.outputs.ecrImage }}"
+        run: echo "Deploying Image ${{ env.ecrImage }}"
 
       - name: Download task definition
         run: |
