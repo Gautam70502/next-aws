@@ -30,7 +30,7 @@
         run: |
           docker build -t $REGISTRY/$REPOSITORY:latest .
           docker push $REGISTRY/$REPOSITORY:latest
-          echo "ecrImage=$REGISTRY/$REPOSITORY:latest" >> "$GITHUB_OUTPUT"
+          echo "ecrImage=$REGISTRY/$REPOSITORY:latest" >>  $GITHUB_ENV
 
       - name: Debug ECR Image Output
         run: echo "Image pushed ${{ steps.build-image.outputs.ecrImage }}"    
